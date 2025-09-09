@@ -8,7 +8,7 @@ export default class Car extends SceneObject {
 		super(options);
 	}
 
-	public static async make(scene: Scene) {
+	public static async make(scene: Scene): Promise<Car> {
 		// Make the instance
 		const instance = new Car({
 			modelPrefix: ModelPrefix.CAR,
