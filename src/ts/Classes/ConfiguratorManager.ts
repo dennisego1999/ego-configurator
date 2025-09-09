@@ -96,6 +96,8 @@ export default class ConfiguratorManager {
 	private async preloadMaterialsAndObjects() {
 		// Preload possible objects and materials here
 		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 1 });
+		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 2 });
+		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 3 });
 	}
 
 	private updateSceneCameraAndRenderSize() {
