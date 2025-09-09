@@ -91,8 +91,6 @@ export default class ModelManager {
 				model.position.copy(spawnPosition);
 				model.quaternion.copy(spawnRotation);
 				model.scale.copy(spawnScale);
-				model.castShadow = true;
-				model.receiveShadow = true;
 
 				// Store in cache
 				this._modelCache.set(`${modelPrefix}-${modelId}`, {

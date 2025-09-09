@@ -23,7 +23,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<Section class="configurator">
+	<Section class="configurator" :fluid="true">
 		<canvas ref="configuratorCanvas" class="h-full w-full" />
 	</Section>
 </template>

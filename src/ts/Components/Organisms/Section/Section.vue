@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import ISectionTag from '../../../Interfaces/ISectionTag.ts';
+import ISection from '../../../Interfaces/ISection.ts';
 
 // Define props
-withDefaults(defineProps<ISectionTag>(), {
-	tag: 'section'
+withDefaults(defineProps<ISection>(), {
+	tag: 'section',
+	fluid: false
 });
 </script>
 
 <template>
-	<component :is="tag" class="section">
+	<component :is="tag" class="section" :class="{ 'section--fluid': fluid }">
 		<div class="section__inner">
 			<slot />
 		</div>

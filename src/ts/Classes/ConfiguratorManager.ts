@@ -1,4 +1,4 @@
-import { AmbientLight, Clock, Scene } from 'three';
+import { AmbientLight, Clock, Color, DirectionalLight, Mesh, MeshStandardMaterial, PlaneGeometry, Scene } from 'three';
 import ConfiguratorRenderer from './ConfiguratorRenderer.ts';
 import ConfiguratorCamera from './ConfiguratorCamera.ts';
 import { EventService } from '../Services/EventService.ts';
@@ -87,6 +87,10 @@ export default class ConfiguratorManager {
 		// Add ambient light
 		const ambientLight = new AmbientLight(0xffffff, 4.5);
 		this._scene.add(ambientLight);
+
+		const directionalLight = new DirectionalLight(0xffffff, 1);
+		directionalLight.castShadow = true;
+		this._scene.add(directionalLight);
 	}
 
 	private async preloadMaterialsAndObjects() {
@@ -111,6 +115,14 @@ export default class ConfiguratorManager {
 	private async populateScene(): Promise<void> {
 		// Make the car model
 		this._car = await Car.make(this._scene);
+
+		this._scene.background = new Color(0xadd8e6);
+
+		const ground = new Mesh(new PlaneGeometry(100, 100), new MeshStandardMaterial({ color: 0x228b22 }));
+		ground.rotation.x = -Math.PI / 2;
+		ground.position.y = 0;
+		ground.receiveShadow = true;
+		this._scene.add(ground);
 	}
 
 	private animate(): void {
