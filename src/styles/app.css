@@ -8,6 +8,8 @@
 @import "../ts/Components/Atoms/Label/label.css";
 @import "../ts/Components/Atoms/Text/text.css";
 
+@import "../ts/Components/Organisms/Configurator/configurator.css";
+
 /* Tailwind */
 @import "tailwindcss";
 
