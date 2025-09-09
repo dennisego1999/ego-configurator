@@ -6,6 +6,7 @@ import { CustomEventKey } from '../Enums/CustomEventKey.ts';
 import ModelManager from './ModelManager.ts';
 import { ModelPrefix } from '../Enums/ModelPrefix.ts';
 import Car from './Car.ts';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 export default class ConfiguratorManager {
 	private static _instance: ConfiguratorManager;
@@ -13,6 +14,7 @@ export default class ConfiguratorManager {
 	private _clock: Clock = new Clock();
 	private _scene: Scene = new Scene();
 	private _car: Car | null = null;
+	private _controls: OrbitControls | null = null;
 	private _renderer: ConfiguratorRenderer | null = null;
 	private _camera: ConfiguratorCamera | null = null;
 	private _canvas: HTMLCanvasElement | null = null;
@@ -40,6 +42,7 @@ export default class ConfiguratorManager {
 		this._canvas = canvas;
 		this._renderer = new ConfiguratorRenderer(this._canvas);
 		this._camera = new ConfiguratorCamera(this._scene, this._canvas);
+		this._controls = new OrbitControls(this._camera, this._canvas);
 
 		// Preload custom materials and scene objects
 		await this.preloadMaterialsAndObjects();
@@ -120,10 +123,13 @@ export default class ConfiguratorManager {
 	}
 
 	private render(delta: number): void {
-		if (!this._renderer || !this._camera || !this._car) return;
+		if (!this._renderer || !this._camera || !this._car || !this._controls) return;
 
 		// Update the car
 		this._car.update(delta);
+
+		// Update controls
+		this._controls.update();
 
 		// Render
 		this._renderer.render(this._scene, this._camera);
