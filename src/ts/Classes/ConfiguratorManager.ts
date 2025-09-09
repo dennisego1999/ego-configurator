@@ -108,8 +108,6 @@ export default class ConfiguratorManager {
 	private async populateScene(): Promise<void> {
 		// Make the car model
 		this._car = await Car.make(this._scene);
-
-		console.log(this._car.modelDimensions);
 	}
 
 	private animate(): void {
