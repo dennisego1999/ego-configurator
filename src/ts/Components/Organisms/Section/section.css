@@ -1,0 +1,11 @@
+@layer components {
+    .section {
+        @apply relative h-full w-full px-4 sm:px-6 lg:px-8;
+
+        container-type: inline-size;
+    }
+
+    .section__inner {
+        @apply container h-full mx-auto flex flex-wrap;
+    }
+}

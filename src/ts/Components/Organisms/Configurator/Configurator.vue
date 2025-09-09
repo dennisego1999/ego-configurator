@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Section from '../../Organisms/Section/Section.vue';
 import ConfiguratorManager from '../../../Classes/ConfiguratorManager.ts';
 import { onBeforeUnmount, onMounted, ref, Ref } from 'vue';
 
@@ -22,7 +23,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div class="configurator">
-		<canvas ref="configuratorCanvas" />
-	</div>
+	<Section class="configurator">
+		<canvas ref="configuratorCanvas" class="h-full w-full" />
+	</Section>
 </template>

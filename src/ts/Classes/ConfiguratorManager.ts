@@ -1,14 +1,18 @@
-import { Clock, Scene } from 'three';
+import { AmbientLight, Clock, Scene } from 'three';
 import ConfiguratorRenderer from './ConfiguratorRenderer.ts';
 import ConfiguratorCamera from './ConfiguratorCamera.ts';
 import { EventService } from '../Services/EventService.ts';
 import { CustomEventKey } from '../Enums/CustomEventKey.ts';
+import ModelManager from './ModelManager.ts';
+import { ModelPrefix } from '../Enums/ModelPrefix.ts';
+import Car from './Car.ts';
 
 export default class ConfiguratorManager {
 	private static _instance: ConfiguratorManager;
 
 	private _clock: Clock = new Clock();
 	private _scene: Scene = new Scene();
+	private _car: Car | null = null;
 	private _renderer: ConfiguratorRenderer | null = null;
 	private _camera: ConfiguratorCamera | null = null;
 	private _canvas: HTMLCanvasElement | null = null;
@@ -43,6 +47,12 @@ export default class ConfiguratorManager {
 		// Update camera and renderer size
 		this.updateSceneCameraAndRenderSize();
 
+		// Setup the lighting
+		this.setupLighting();
+
+		// Populate the scene
+		await this.populateScene();
+
 		// Add resize listener
 		window.addEventListener('resize', () => this.resize());
 
@@ -70,19 +80,36 @@ export default class ConfiguratorManager {
 		}
 	}
 
+	private setupLighting(): void {
+		// Add ambient light
+		const ambientLight = new AmbientLight(0xffffff, 4.5);
+		this._scene.add(ambientLight);
+	}
+
 	private async preloadMaterialsAndObjects() {
 		// Preload possible objects and materials here
+		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 1 });
 	}
 
 	private updateSceneCameraAndRenderSize() {
-		if (this._camera) {
-			this._camera.aspect = window.innerWidth / window.innerHeight;
-			this._camera.updateProjectionMatrix();
+		if (!this._canvas || !this._camera || !this._renderer) {
+			return;
 		}
 
-		if (this._renderer) {
-			this._renderer.setSize(window.innerWidth, window.innerHeight);
-		}
+		const parentElement = this._canvas.parentNode as HTMLElement;
+		const boundingClientRect = parentElement.getBoundingClientRect();
+
+		this._camera.aspect = boundingClientRect.width / boundingClientRect.height;
+		this._camera.updateProjectionMatrix();
+
+		this._renderer.setSize(boundingClientRect.width, boundingClientRect.height);
+	}
+
+	private async populateScene(): Promise<void> {
+		// Make the car model
+		this._car = await Car.make(this._scene);
+
+		console.log(this._car.modelDimensions);
 	}
 
 	private animate(): void {
@@ -95,11 +122,12 @@ export default class ConfiguratorManager {
 	}
 
 	private render(delta: number): void {
-		if (!this._renderer || !this._camera) return;
+		if (!this._renderer || !this._camera || !this._car) return;
 
-		// Custom render logic can go here
-		console.log('rendering ', delta);
+		// Update the car
+		this._car.update(delta);
 
+		// Render
 		this._renderer.render(this._scene, this._camera);
 	}
 }

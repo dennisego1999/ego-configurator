@@ -7,6 +7,8 @@ export default class ConfiguratorCamera extends PerspectiveCamera {
 		// Update camera projection matrix
 		this.updateProjectionMatrix();
 
+		this.position.set(0, 0, 2);
+
 		// Add camera to scene
 		scene.add(this);
 	}
