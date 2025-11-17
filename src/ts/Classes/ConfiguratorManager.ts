@@ -1,4 +1,4 @@
-import { AmbientLight, Clock, Color, DirectionalLight, Mesh, MeshStandardMaterial, PlaneGeometry, Scene } from 'three';
+import { AmbientLight, Clock, DirectionalLight, Scene } from 'three';
 import ConfiguratorRenderer from './ConfiguratorRenderer.ts';
 import ConfiguratorCamera from './ConfiguratorCamera.ts';
 import { EventService } from '../Services/EventService.ts';
@@ -7,6 +7,7 @@ import ModelManager from './ModelManager.ts';
 import { ModelPrefix } from '../Enums/ModelPrefix.ts';
 import Car from './Car.ts';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import Environment from './Environment.ts';
 
 export default class ConfiguratorManager {
 	private static _instance: ConfiguratorManager;
@@ -14,6 +15,7 @@ export default class ConfiguratorManager {
 	private _clock: Clock = new Clock();
 	private _scene: Scene = new Scene();
 	private _car: Car | null = null;
+	private _environment: Environment | null = null;
 	private _controls: OrbitControls | null = null;
 	private _renderer: ConfiguratorRenderer | null = null;
 	private _camera: ConfiguratorCamera | null = null;
@@ -96,8 +98,7 @@ export default class ConfiguratorManager {
 	private async preloadMaterialsAndObjects() {
 		// Preload possible objects and materials here
 		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 1 });
-		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 2 });
-		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 3 });
+		await ModelManager.instance.get({ modelPrefix: ModelPrefix.ENVIRONMENT, modelId: 1 });
 	}
 
 	private updateSceneCameraAndRenderSize() {
@@ -118,13 +119,8 @@ export default class ConfiguratorManager {
 		// Make the car model
 		this._car = await Car.make(this._scene);
 
-		this._scene.background = new Color(0xadd8e6);
-
-		const ground = new Mesh(new PlaneGeometry(100, 100), new MeshStandardMaterial({ color: 0x228b22 }));
-		ground.rotation.x = -Math.PI / 2;
-		ground.position.y = 0;
-		ground.receiveShadow = true;
-		this._scene.add(ground);
+		// Make the environment model
+		this._environment = await Environment.make(this._scene);
 	}
 
 	private animate(): void {
@@ -137,10 +133,13 @@ export default class ConfiguratorManager {
 	}
 
 	private render(delta: number): void {
-		if (!this._renderer || !this._camera || !this._car || !this._controls) return;
+		if (!this._renderer || !this._camera || !this._car || !this._controls || !this._environment) return;
 
 		// Update the car
 		this._car.update(delta);
+
+		// Update the environment
+		this._environment.update(delta);
 
 		// Update controls
 		this._controls.update();

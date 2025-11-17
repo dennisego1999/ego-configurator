@@ -99,6 +99,14 @@ export default class SceneObject {
 			filteredAnimations.forEach((animation: AnimationClip) => {
 				const action = this._mixer.clipAction(animation);
 
+				if (animation.name === AnimationName.CAR) {
+					action.play();
+				}
+
+				if (animation.name === AnimationName.ENVIRONMENT) {
+					action.play();
+				}
+
 				this._animationsMap.set(animation.name as AnimationName, action);
 			});
 

@@ -1,4 +1,5 @@
 export enum AnimationName {
 	TPOSE = 'TPose',
-	CAR = 'Animation'
+	CAR = 'driving',
+	ENVIRONMENT = 'Take 01'
 }
