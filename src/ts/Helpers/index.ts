@@ -124,3 +124,13 @@ export function degreesToQuaternion(x: number, y: number, z: number): Quaternion
 	const euler = new Euler(MathUtils.degToRad(x), MathUtils.degToRad(y), MathUtils.degToRad(z), 'XYZ');
 	return new Quaternion().setFromEuler(euler);
 }
+
+/**
+ * Type guard to check if an Object3D is a Mesh.
+ *
+ * @param {Object3D | undefined} obj - The object to check.
+ * @returns {boolean} True if the object is a Mesh, false otherwise.
+ */
+export function isMesh(obj: Object3D | undefined): obj is Mesh {
+	return obj !== undefined && (obj as any).isMesh;
+}

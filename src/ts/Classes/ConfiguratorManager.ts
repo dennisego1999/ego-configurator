@@ -1,4 +1,4 @@
-import { AmbientLight, Clock, DirectionalLight, Scene } from 'three';
+import { AmbientLight, Clock, Color, DirectionalLight, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three';
 import ConfiguratorRenderer from './ConfiguratorRenderer.ts';
 import ConfiguratorCamera from './ConfiguratorCamera.ts';
 import { EventService } from '../Services/EventService.ts';
@@ -8,6 +8,8 @@ import { ModelPrefix } from '../Enums/ModelPrefix.ts';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Environment from './Environment.ts';
 import Vehicle from './Vehicle.ts';
+import { getChildren, isMesh } from '../Helpers';
+import { FlameType } from '../Enums/FlameType.ts';
 
 export default class ConfiguratorManager {
 	private static _instance: ConfiguratorManager;
@@ -21,6 +23,8 @@ export default class ConfiguratorManager {
 	private _camera: ConfiguratorCamera | null = null;
 	private _canvas: HTMLCanvasElement | null = null;
 	private _animateFrameId: number | null = null;
+	private _insideFlames: Mesh | null = null;
+	private _outsideFlames: Mesh | null = null;
 
 	public elapsedTime: number = 0;
 
@@ -121,6 +125,27 @@ export default class ConfiguratorManager {
 
 		// Make the environment model
 		this._environment = await Environment.make(this._scene);
+
+		const models: Object3D[] = getChildren(
+			this._scene,
+			[
+				'Circle001_12', // Inside flames material
+				'Torus000_13' // Outside flames material
+			],
+			'exact'
+		);
+
+		// Set variables
+		this._outsideFlames = isMesh(models[0]?.children[0]) ? (models[0].children[0] as Mesh) : null;
+		this._insideFlames = isMesh(models[1]?.children[0]) ? (models[1].children[0] as Mesh) : null;
+	}
+
+	public setFlameColor(color: Color, type: FlameType = FlameType.INSIDE) {
+		const flame = type === FlameType.INSIDE ? this._insideFlames : this._outsideFlames;
+
+		if (flame && flame.material instanceof MeshStandardMaterial) {
+			flame.material.emissive = color;
+		}
 	}
 
 	private animate(): void {

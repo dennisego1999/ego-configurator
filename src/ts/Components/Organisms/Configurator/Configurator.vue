@@ -2,18 +2,24 @@
 import Section from '../../Organisms/Section/Section.vue';
 import ConfiguratorManager from '../../../Classes/ConfiguratorManager.ts';
 import { onBeforeUnmount, onMounted, ref, Ref } from 'vue';
+import { Color } from 'three';
+import { FlameType } from '../../../Enums/FlameType.ts';
 
 // Set variables
 const configuratorCanvas: Ref<HTMLCanvasElement | null> = ref(null);
 
 // Life cycles
-onMounted(() => {
+onMounted(async () => {
 	if (!configuratorCanvas.value) {
 		return;
 	}
 
 	// Init the configurator
-	ConfiguratorManager.instance.init(configuratorCanvas.value);
+	await ConfiguratorManager.instance.init(configuratorCanvas.value);
+
+	// Set flame colors
+	ConfiguratorManager.instance.setFlameColor(new Color('purple'), FlameType.OUTSIDE);
+	ConfiguratorManager.instance.setFlameColor(new Color('red'), FlameType.INSIDE);
 });
 
 onBeforeUnmount(() => {
