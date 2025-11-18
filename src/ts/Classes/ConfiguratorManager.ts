@@ -1,4 +1,14 @@
-import { AmbientLight, Clock, Color, DirectionalLight, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three';
+import {
+	AmbientLight,
+	Clock,
+	Color,
+	DirectionalLight,
+	Mesh,
+	MeshStandardMaterial,
+	Object3D,
+	Scene,
+	Vector2
+} from 'three';
 import ConfiguratorRenderer from './ConfiguratorRenderer.ts';
 import ConfiguratorCamera from './ConfiguratorCamera.ts';
 import { EventService } from '../Services/EventService.ts';
@@ -10,6 +20,13 @@ import Environment from './Environment.ts';
 import Vehicle from './Vehicle.ts';
 import { getChildren, isMesh } from '../Helpers';
 import { FlameType } from '../Enums/FlameType.ts';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass';
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass';
+import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 export default class ConfiguratorManager {
 	private static _instance: ConfiguratorManager;
@@ -17,6 +34,7 @@ export default class ConfiguratorManager {
 	private _clock: Clock = new Clock();
 	private _scene: Scene = new Scene();
 	private _vehicle: Vehicle | null = null;
+	private _composer: EffectComposer | null = null;
 	private _environment: Environment | null = null;
 	private _controls: OrbitControls | null = null;
 	private _renderer: ConfiguratorRenderer | null = null;
@@ -61,6 +79,9 @@ export default class ConfiguratorManager {
 
 		// Populate the scene
 		await this.populateScene();
+
+		// Setup postprocessing
+		this.setupPostProcessing();
 
 		// Add resize listener
 		window.addEventListener('resize', () => this.resize());
@@ -140,6 +161,41 @@ export default class ConfiguratorManager {
 		this._outerFlames = isMesh(models[1]?.children[0]) ? (models[1].children[0] as Mesh) : null;
 	}
 
+	private setupPostProcessing(): void {
+		if (!this._renderer || !this._camera) {
+			return;
+		}
+
+		// Create composer
+		this._composer = new EffectComposer(this._renderer);
+		this._composer.addPass(new RenderPass(this._scene, this._camera));
+
+		// Add bokeh
+		const bokehPass = new BokehPass(this._scene, this._camera, {
+			focus: 1,
+			aperture: 0.0001,
+			maxblur: 0.1
+		});
+		this._composer.addPass(bokehPass);
+
+		// Add film pass
+		const filmPass = new FilmPass();
+		this._composer.addPass(filmPass);
+
+		// Add bloom pass
+		const resolution = new Vector2(window.innerWidth, window.innerHeight);
+		const bloomPass = new UnrealBloomPass(resolution, 1.5, 0.4, 0.85);
+		this._composer.addPass(bloomPass);
+
+		// Add SMAA
+		const smaaPass = new SMAAPass();
+		this._composer.addPass(smaaPass);
+
+		// Add output
+		const outputPass = new OutputPass();
+		this._composer.addPass(outputPass);
+	}
+
 	public setFlameColor(color: Color, type: FlameType = FlameType.INNER) {
 		const flame = type === FlameType.INNER ? this._innerFlames : this._outerFlames;
 
@@ -158,7 +214,7 @@ export default class ConfiguratorManager {
 	}
 
 	private render(delta: number): void {
-		if (!this._renderer || !this._camera || !this._vehicle || !this._controls || !this._environment) return;
+		if (!this._composer || !this._camera || !this._vehicle || !this._controls || !this._environment) return;
 
 		// Update the VEHICLE
 		this._vehicle.update(delta);
@@ -170,6 +226,6 @@ export default class ConfiguratorManager {
 		this._controls.update();
 
 		// Render
-		this._renderer.render(this._scene, this._camera);
+		this._composer.render();
 	}
 }
