@@ -1,4 +1,4 @@
 export enum FlameType {
-	INSIDE = 'inside',
-	OUTSIDE = 'outside'
+	INNER = 'inner',
+	OUTER = 'outer'
 }

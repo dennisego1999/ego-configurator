@@ -23,8 +23,8 @@ export default class ConfiguratorManager {
 	private _camera: ConfiguratorCamera | null = null;
 	private _canvas: HTMLCanvasElement | null = null;
 	private _animateFrameId: number | null = null;
-	private _insideFlames: Mesh | null = null;
-	private _outsideFlames: Mesh | null = null;
+	private _innerFlames: Mesh | null = null;
+	private _outerFlames: Mesh | null = null;
 
 	public elapsedTime: number = 0;
 
@@ -129,19 +129,19 @@ export default class ConfiguratorManager {
 		const models: Object3D[] = getChildren(
 			this._scene,
 			[
-				'Circle001_12', // Inside flames material
-				'Torus000_13' // Outside flames material
+				'Circle001_12', // Inner flames material
+				'Torus000_13' // Outer flames material
 			],
 			'exact'
 		);
 
 		// Set variables
-		this._outsideFlames = isMesh(models[0]?.children[0]) ? (models[0].children[0] as Mesh) : null;
-		this._insideFlames = isMesh(models[1]?.children[0]) ? (models[1].children[0] as Mesh) : null;
+		this._innerFlames = isMesh(models[0]?.children[0]) ? (models[0].children[0] as Mesh) : null;
+		this._outerFlames = isMesh(models[1]?.children[0]) ? (models[1].children[0] as Mesh) : null;
 	}
 
-	public setFlameColor(color: Color, type: FlameType = FlameType.INSIDE) {
-		const flame = type === FlameType.INSIDE ? this._insideFlames : this._outsideFlames;
+	public setFlameColor(color: Color, type: FlameType = FlameType.INNER) {
+		const flame = type === FlameType.INNER ? this._innerFlames : this._outerFlames;
 
 		if (flame && flame.material instanceof MeshStandardMaterial) {
 			flame.material.emissive = color;

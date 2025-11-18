@@ -11,6 +11,8 @@
 @import "../ts/Components/Atoms/Label/label.css";
 @import "../ts/Components/Atoms/Text/text.css";
 
+@import "../ts/Components/Molecules/ColorPicker/color-picker.css";
+
 @import "../ts/Components/Organisms/Section/section.css";
 @import "../ts/Components/Organisms/Configurator/configurator.css";
 
