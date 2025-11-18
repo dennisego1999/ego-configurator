@@ -10,8 +10,8 @@ import IAudioItem from '../../../Interfaces/IAudioItem.ts';
 
 // Set variables
 const configuratorCanvas: Ref<HTMLCanvasElement | null> = ref(null);
-const outerFlameColor: Ref<string> = ref('#ff0000');
-const innerFlameColor: Ref<string> = ref('#ffffff');
+const outerFlameColor: Ref<string> = ref('#E1E345');
+const innerFlameColor: Ref<string> = ref('#F6C5C5');
 const backgroundAudio: Ref<HTMLAudioElement | null> = ref(null);
 const spaceshipAudio: Ref<HTMLAudioElement | null> = ref(null);
 const audioFiles: IAudioItem[] = [

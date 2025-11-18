@@ -1,5 +1,0 @@
-@layer components {
-    label {
-        @apply cursor-pointer;
-    }
-}

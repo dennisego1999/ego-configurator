@@ -1,5 +1,35 @@
 @layer components {
     .text {
-        @apply text-xl md:text-2xl;
+        &[data-size='1'] {
+            @apply text-xs md:text-sm;
+        }
+
+        &[data-size='2'] {
+            @apply text-sm md:text-base;
+        }
+
+        &[data-size='3'] {
+            @apply text-base md:text-lg;
+        }
+
+        &[data-size='4'] {
+            @apply text-lg md:text-xl;
+        }
+
+        &[data-align='left'] {
+            @apply text-left;
+        }
+
+        &[data-align='center'] {
+            @apply text-center;
+        }
+
+        &[data-align='right'] {
+            @apply text-right;
+        }
+
+        &[data-font-weight='bold'] {
+            @apply font-bold;
+        }
     }
 }
