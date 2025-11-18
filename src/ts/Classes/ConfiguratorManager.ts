@@ -120,7 +120,7 @@ export default class ConfiguratorManager {
 	}
 
 	private async populateScene(): Promise<void> {
-		// Make the VEHICLE model
+		// Make the vehicle model
 		this._vehicle = await Vehicle.make(this._scene);
 
 		// Make the environment model
