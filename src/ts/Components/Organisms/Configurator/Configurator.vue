@@ -5,15 +5,38 @@ import { onBeforeUnmount, onMounted, ref, watch, Ref } from 'vue';
 import { Color } from 'three';
 import { FlameType } from '../../../Enums/FlameType.ts';
 import ColorPicker from '../../Molecules/ColorPicker/ColorPicker.vue';
+import VolumeIcon from '../../Atoms/VolumeIcon/VolumeIcon.vue';
 
 // Set variables
 const configuratorCanvas: Ref<HTMLCanvasElement | null> = ref(null);
-const outerFlameColor = ref('#ff0000');
-const innerFlameColor = ref('#00aaff');
+const outerFlameColor: Ref<string> = ref('#ff0000');
+const innerFlameColor: Ref<string> = ref('#00aaff');
+const music: Ref<HTMLAudioElement | null> = ref(null);
+const isPlaying = ref(false);
 
-// Define method
+// Define methods
 function applyFlameColor(type: FlameType, hex: string) {
 	ConfiguratorManager.instance.setFlameColor(new Color(hex), type);
+}
+
+function toggleMusic() {
+	if (!music.value) {
+		return;
+	}
+
+	if (music.value.paused) {
+		music.value.play().catch((err) => {
+			console.warn('Audio play failed:', err);
+		});
+
+		music.value.muted = false;
+		isPlaying.value = true;
+
+		return;
+	}
+
+	music.value.pause();
+	isPlaying.value = false;
 }
 
 // Set watchers
@@ -38,13 +61,18 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-	// Destroy the configurator
 	ConfiguratorManager.instance.destroy();
 });
 </script>
 
 <template>
 	<Section class="configurator" :fluid="true">
+		<VolumeIcon
+			class="absolute top-2 right-2 z-10 h-8 w-8 cursor-pointer text-white"
+			:enabled="isPlaying"
+			@click="toggleMusic"
+		/>
+
 		<canvas ref="configuratorCanvas" class="h-full w-full" />
 
 		<ColorPicker v-model:color="outerFlameColor" :data-flame-type="FlameType.OUTER">
@@ -54,5 +82,7 @@ onBeforeUnmount(() => {
 		<ColorPicker v-model:color="innerFlameColor" :data-flame-type="FlameType.INNER">
 			<template #title> Inner flames 🔥</template>
 		</ColorPicker>
+
+		<audio ref="music" src="/assets/audio/interstellar.mp3" muted loop preload="auto" />
 	</Section>
 </template>
