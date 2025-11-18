@@ -1,4 +1,4 @@
 export enum ModelPrefix {
-	CAR = 'car',
+	VEHICLE = 'vehicle',
 	ENVIRONMENT = 'environment'
 }

@@ -5,16 +5,16 @@ import { EventService } from '../Services/EventService.ts';
 import { CustomEventKey } from '../Enums/CustomEventKey.ts';
 import ModelManager from './ModelManager.ts';
 import { ModelPrefix } from '../Enums/ModelPrefix.ts';
-import Car from './Car.ts';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import Environment from './Environment.ts';
+import Vehicle from './Vehicle.ts';
 
 export default class ConfiguratorManager {
 	private static _instance: ConfiguratorManager;
 
 	private _clock: Clock = new Clock();
 	private _scene: Scene = new Scene();
-	private _car: Car | null = null;
+	private _vehicle: Vehicle | null = null;
 	private _environment: Environment | null = null;
 	private _controls: OrbitControls | null = null;
 	private _renderer: ConfiguratorRenderer | null = null;
@@ -97,7 +97,7 @@ export default class ConfiguratorManager {
 
 	private async preloadMaterialsAndObjects() {
 		// Preload possible objects and materials here
-		await ModelManager.instance.get({ modelPrefix: ModelPrefix.CAR, modelId: 1 });
+		await ModelManager.instance.get({ modelPrefix: ModelPrefix.VEHICLE, modelId: 1 });
 		await ModelManager.instance.get({ modelPrefix: ModelPrefix.ENVIRONMENT, modelId: 1 });
 	}
 
@@ -116,8 +116,8 @@ export default class ConfiguratorManager {
 	}
 
 	private async populateScene(): Promise<void> {
-		// Make the car model
-		this._car = await Car.make(this._scene);
+		// Make the VEHICLE model
+		this._vehicle = await Vehicle.make(this._scene);
 
 		// Make the environment model
 		this._environment = await Environment.make(this._scene);
@@ -133,10 +133,10 @@ export default class ConfiguratorManager {
 	}
 
 	private render(delta: number): void {
-		if (!this._renderer || !this._camera || !this._car || !this._controls || !this._environment) return;
+		if (!this._renderer || !this._camera || !this._vehicle || !this._controls || !this._environment) return;
 
-		// Update the car
-		this._car.update(delta);
+		// Update the VEHICLE
+		this._vehicle.update(delta);
 
 		// Update the environment
 		this._environment.update(delta);

@@ -42,7 +42,7 @@ export default class SceneObject {
 		this._animationsMap = new Map();
 		this._model = new Object3D();
 		this._mixer = new AnimationMixer(new Mesh());
-		this._currentAction = AnimationName.CAR;
+		this._currentAction = AnimationName.VEHICLE;
 	}
 
 	get modelDimensions() {
@@ -99,7 +99,7 @@ export default class SceneObject {
 			filteredAnimations.forEach((animation: AnimationClip) => {
 				const action = this._mixer.clipAction(animation);
 
-				if (animation.name === AnimationName.CAR) {
+				if (animation.name === AnimationName.VEHICLE) {
 					action.play();
 				}
 

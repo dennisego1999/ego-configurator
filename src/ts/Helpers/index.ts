@@ -1,4 +1,4 @@
-import { Mesh, Object3D, Scene } from 'three';
+import { Euler, MathUtils, Mesh, Object3D, Quaternion, Scene } from 'three';
 
 /**
  * Linearly interpolates between two numeric values.
@@ -40,7 +40,7 @@ export function delay(seconds: number): Promise<void> {
  *
  * This function traverses the Three.js scene graph hierarchy, returning a flat array
  * that includes both the parent objects and all nested child objects up to the specified depth.
- * 
+ *
  * @example
  * // Returns all objects in the scene (including nested children)
  * const allObjects = flattenChildren(scene.children, Infinity);
@@ -110,4 +110,17 @@ export function isMatching(item: Object3D, binding: { name: string; matching: st
 		default:
 			return item.name === binding.name || (parentName && parentName === binding.name);
 	}
+}
+
+/**
+ * Converts Euler angles in degrees to a Quaternion.
+ *
+ * @param {number} x - The rotation around the X-axis in degrees.
+ * @param {number} y - The rotation around the Y-axis in degrees.
+ * @param {number} z - The rotation around the Z-axis in degrees.
+ * @returns {Quaternion} The resulting quaternion rotation.
+ */
+export function degreesToQuaternion(x: number, y: number, z: number): Quaternion {
+	const euler = new Euler(MathUtils.degToRad(x), MathUtils.degToRad(y), MathUtils.degToRad(z), 'XYZ');
+	return new Quaternion().setFromEuler(euler);
 }
