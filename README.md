@@ -1,5 +1,35 @@
-# Vue 3 + TypeScript + Vite
+# Space Scene
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+An interactive WebGL scene featuring a flying spaceship. Currently, the color of the laser trails emitted from the engines is configurable.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Configuration
+
+| Option | Description |
+|--------|-------------|
+| `engineColor` | The color of the laser trails coming out of the engines |
+
+## Requirements
+
+Ensure you are using the correct Node.js version by running the following command in the root of the repository:
+```sh
+nvm use
+```
+
+## Development
+
+Install dependencies:
+```sh
+yarn
+```
+
+Start the development server with HMR:
+```sh
+yarn dev
+```
+
+## Production
+
+Build the project for production:
+```sh
+yarn build
+```
