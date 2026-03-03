@@ -6,7 +6,7 @@ import Heading from '../../Atoms/Heading/Heading.vue';
 const color = defineModel<string>('color', { default: '#ff0000' });
 
 // Set variables
-let drag: 'sat' | 'hue' | null = null;
+const drag: Ref<'sat' | 'hue' | null> = ref(null);
 const h: Ref<number> = ref(0);
 const s: Ref<number> = ref(100);
 const l: Ref<number> = ref(50);
@@ -89,12 +89,12 @@ function handleHueMove(e: MouseEvent) {
 }
 
 function onMove(e: MouseEvent) {
-	if (drag === 'sat') handleSatMove(e);
-	if (drag === 'hue') handleHueMove(e);
+	if (drag.value === 'sat') handleSatMove(e);
+	if (drag.value === 'hue') handleHueMove(e);
 }
 
 function onUp() {
-	drag = null;
+	drag.value = null;
 }
 
 // Life cycles
