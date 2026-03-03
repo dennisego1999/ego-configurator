@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineModel, Ref } from 'vue';
+import { ref, onMounted, onUnmounted, Ref } from 'vue';
 import Heading from '../../Atoms/Heading/Heading.vue';
 
 // Define model
